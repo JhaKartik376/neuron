@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "neuron-graph"
+version = "0.1.0"
+description = "Transform any codebase into a queryable, scored knowledge graph with health metrics and architecture fitness rules"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Kartik Jha" }]
+keywords = ["knowledge-graph", "code-analysis", "architecture", "ast", "tree-sitter"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+dependencies = [
+    "networkx>=3.0",
+    "tree-sitter>=0.23.0",
+    "tree-sitter-python",
+    "tree-sitter-javascript",
+    "tree-sitter-typescript",
+    "tree-sitter-go",
+    "tree-sitter-rust",
+    "tree-sitter-java",
+    "tree-sitter-c",
+    "tree-sitter-cpp",
+    "tree-sitter-ruby",
+    "tree-sitter-c-sharp",
+    "click>=8.0",
+    "rich>=13.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+tui = ["textual>=0.40"]
+svg = ["matplotlib>=3.7"]
+pdf = ["pypdf>=3.0", "html2text>=2020.1.16"]
+watch = ["watchdog>=3.0", "websockets>=12.0"]
+leiden = ["graspologic>=3.3"]
+office = ["python-docx>=0.8", "openpyxl>=3.1"]
+video = ["faster-whisper>=0.10", "yt-dlp>=2024.1"]
+neo4j = ["neo4j>=5.0"]
+embeddings = ["sentence-transformers>=2.2"]
+all = [
+    "neuron-graph[mcp,tui,svg,pdf,watch,leiden,office,video,neo4j,embeddings]",
+]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.1"]
+
+[project.scripts]
+neuron = "neuron.__main__:cli"
+
+[project.urls]
+Homepage = "https://github.com/kartikjha/neuron"
+Repository = "https://github.com/kartikjha/neuron"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
