@@ -60,6 +60,9 @@ neuron = "neuron.__main__:cli"
 Homepage = "https://github.com/kartikjha/neuron"
 Repository = "https://github.com/kartikjha/neuron"
 
+[tool.hatch.build.targets.wheel]
+packages = ["neuron"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"

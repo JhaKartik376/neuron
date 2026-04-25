@@ -4,49 +4,43 @@
 
 Neuron scans your project, parses every file using tree-sitter AST extraction, builds a knowledge graph of entities and relationships, clusters them into communities, scores each module's health from A to F, and gives you an interactive visualization to explore it all.
 
-No embeddings. No API keys for code. Deterministic AST parsing. Your code never leaves your machine.
+> No embeddings. No API keys for code. Deterministic AST parsing. Your code never leaves your machine.
 
-```
+```bash
 neuron build .
 ```
 
 ```
-Scanning files...
-  Found 26 files across 2 languages
-Extracting entities...
-  Extracted 266 entities, 1939 relations
-Building knowledge graph...
-  624 nodes, 1301 edges
-Detecting communities...
-  23 communities via louvain
-Computing health scores...
-  Overall health: B (82%)
-
-╭─────────────── Neuron Summary ───────────────╮
-│   Nodes           624                        │
-│   Edges           1301                       │
-│   Communities     23                         │
-│   Health          B (82%)                    │
-│   God Nodes       10                         │
-│   Bridge Nodes    10                         │
-╰──────────────────────────────────────────────╯
+Scanning files...        Found 26 files across 2 languages
+Extracting entities...   Extracted 266 entities, 1939 relations
+Building graph...        624 nodes, 1301 edges
+Detecting communities... 23 communities via louvain
+Health scores...         Overall health: B (82%)
 ```
 
 ---
 
 ## Why Neuron?
 
-You open a new codebase. Thousands of files. Who calls what? Which modules are tightly coupled? Where are the god objects hiding? What would break if you refactored that one service?
+```mermaid
+graph LR
+    A["I don't understand\nthis codebase"] -->|neuron build| B["Full knowledge graph\nyou can query & explore"]
+    C["Which modules\nare fragile?"] -->|neuron health| D["A-F grades with\ncoupling, cohesion,\ncomplexity metrics"]
+    E["Are we violating\nour architecture?"] -->|neuron fitness| F["Catches layer violations,\ncircular deps,\ncoupling limits"]
+    G["What changed\nstructurally?"] -->|neuron diff| H["Added/removed nodes,\nedges, drift scores"]
+    I["I need to present\nthis to my team"] -->|neuron export| J["D3.js visualization,\nObsidian vaults,\nSVG exports"]
 
-Neuron answers all of this in seconds.
-
-| Problem | How Neuron Helps |
-|---------|-----------------|
-| "I don't understand this codebase" | Builds a full knowledge graph you can query and explore |
-| "Which modules are the most fragile?" | Health scores with coupling, cohesion, and complexity grades |
-| "Are we violating our architecture?" | Fitness rules catch layer violations, circular deps, and coupling limits |
-| "What changed structurally?" | Graph diffing shows added/removed nodes, edges, and drift scores |
-| "I need to present this to my team" | Interactive D3.js visualization, Obsidian vaults, SVG exports |
+    style A fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style C fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style E fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style G fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style I fill:#ff6b6b,stroke:#c0392b,color:#fff
+    style B fill:#2ecc71,stroke:#27ae60,color:#fff
+    style D fill:#2ecc71,stroke:#27ae60,color:#fff
+    style F fill:#2ecc71,stroke:#27ae60,color:#fff
+    style H fill:#2ecc71,stroke:#27ae60,color:#fff
+    style J fill:#2ecc71,stroke:#27ae60,color:#fff
+```
 
 ---
 
@@ -66,17 +60,26 @@ pip install -e ".[all]"
 
 ### Optional Extras
 
+```mermaid
+graph TD
+    N["neuron-graph"] --> mcp["[mcp]\nMCP server for\nAI assistants"]
+    N --> tui["[tui]\nTextual terminal UI"]
+    N --> svg["[svg]\nStatic SVG export"]
+    N --> pdf["[pdf]\nPDF document parsing"]
+    N --> watch["[watch]\nFile watcher +\nlive reload"]
+    N --> leiden["[leiden]\nLeiden community\ndetection"]
+    N --> office["[office]\nWord/Excel parsing"]
+    N --> video["[video]\nVideo/audio\ntranscription"]
+    N --> neo4j["[neo4j]\nNeo4j graph\ndatabase export"]
+    N --> emb["[embeddings]\nSemantic similarity\nsearch"]
+    N --> all["[all]\nEverything"]
+
+    style N fill:#3498db,stroke:#2980b9,color:#fff
+    style all fill:#e74c3c,stroke:#c0392b,color:#fff
+```
+
 ```bash
 pip install neuron-graph[mcp]        # MCP server for AI assistants
-pip install neuron-graph[tui]        # Textual-based terminal UI
-pip install neuron-graph[svg]        # Static SVG export (matplotlib)
-pip install neuron-graph[pdf]        # PDF document parsing
-pip install neuron-graph[watch]      # File watcher with live reload
-pip install neuron-graph[leiden]     # Leiden community detection
-pip install neuron-graph[office]     # Word/Excel document parsing
-pip install neuron-graph[video]      # Video/audio transcription
-pip install neuron-graph[neo4j]      # Neo4j graph database export
-pip install neuron-graph[embeddings] # Semantic similarity search
 pip install neuron-graph[all]        # Everything
 ```
 
@@ -90,13 +93,17 @@ pip install neuron-graph[all]        # Everything
 neuron build /path/to/your/project
 ```
 
-This runs the full pipeline and outputs:
+```mermaid
+graph LR
+    B["neuron build ."] --> O1[".neuron-out/graph.html\nInteractive D3.js\nvisualization"]
+    B --> O2[".neuron-out/graph.json\nQueryable graph data\nNetworkX format"]
+    B --> O3[".neuron-out/NEURON_REPORT.md\nFull analysis report\nwith health scores"]
 
-| File | What It Is |
-|------|-----------|
-| `.neuron-out/graph.html` | Interactive D3.js visualization |
-| `.neuron-out/graph.json` | Queryable graph data (NetworkX format) |
-| `.neuron-out/NEURON_REPORT.md` | Full analysis report with health scores |
+    style B fill:#3498db,stroke:#2980b9,color:#fff
+    style O1 fill:#1abc9c,stroke:#16a085,color:#fff
+    style O2 fill:#f39c12,stroke:#e67e22,color:#fff
+    style O3 fill:#9b59b6,stroke:#8e44ad,color:#fff
+```
 
 ### Query the graph
 
@@ -104,18 +111,18 @@ This runs the full pipeline and outputs:
 neuron query "UserService" --depth 3
 ```
 
-```
-┌─────────────────────────────────────────────┐
-│ Results for 'UserService'                   │
-├──────────────┬──────────┬──────┬────────────┤
-│ Node         │ Kind     ��� File │ Degree     │
-├──────────────┼──────────┼──────┼────────────┤
-│ UserService  │ class    │ ...  │ 12         │
-│ getUser      │ method   │ ...  │ 4          │
-│ createUser   │ method   │ ...  │ 6          │
-│ validate     │ method   │ ...  │ 3          │
-│ UserRepo     │ class    │ ...  │ 8          │
-└──────────────┴──────────┴──────┴────────────┘
+```mermaid
+graph TD
+    US["UserService\n(class, degree: 12)"] --> gU["getUser\n(method, degree: 4)"]
+    US --> cU["createUser\n(method, degree: 6)"]
+    US --> v["validate\n(method, degree: 3)"]
+    US --> UR["UserRepo\n(class, degree: 8)"]
+
+    style US fill:#e74c3c,stroke:#c0392b,color:#fff
+    style gU fill:#3498db,stroke:#2980b9,color:#fff
+    style cU fill:#3498db,stroke:#2980b9,color:#fff
+    style v fill:#3498db,stroke:#2980b9,color:#fff
+    style UR fill:#e74c3c,stroke:#c0392b,color:#fff
 ```
 
 ### Check codebase health
@@ -124,22 +131,19 @@ neuron query "UserService" --depth 3
 neuron health
 ```
 
-```
-╭──── Codebase Health ────╮
-│       B (82%)           │
-╰─────────────────────────╯
+```mermaid
+block-beta
+    columns 4
+    block:header:4
+        h["Codebase Health: B (82%)"]
+    end
+    m1["auth\nA (91%)"] m2["api\nB (81%)"] m3["core\nC (72%)"] m4["utils\nD (43%)"]
 
-┌──────────┬───────��──────────┬──────────┬────��───────┬───────┐
-│ Module   │ Grade │ Coupling │ Cohesion │ Complexity │ Score │
-├──────────┼───────┼──────────┼──────────┼────────────┼───────┤
-│ auth     │ A     │ 0.95     │ 0.88     │ 0.92       │ 0.91  │
-│ api      │ B     │ 0.78     │ 0.82     │ 0.85       │ 0.81  │
-│ utils    │ D     │ 0.42     │ 0.31     │ 0.55       │ 0.43  ���
-└──────────┴───────┴──────────┴──────────┴────────────┴───────┘
-
-Recommendations:
-  - Reduce coupling in [utils]: extract shared interfaces
-  - Improve cohesion in [utils]: consider splitting this module
+    style header fill:#2ecc71,stroke:#27ae60,color:#fff
+    style m1 fill:#2ecc71,stroke:#27ae60,color:#fff
+    style m2 fill:#27ae60,stroke:#1e8449,color:#fff
+    style m3 fill:#f39c12,stroke:#e67e22,color:#fff
+    style m4 fill:#e74c3c,stroke:#c0392b,color:#fff
 ```
 
 ### Check architecture fitness
@@ -154,7 +158,6 @@ Create a `neuron-fitness.yaml` in your project root:
 rules:
   - name: no-ui-to-db
     kind: no-depend
-    description: UI layer must not directly access database
     source: "ui/*"
     target: "db/*"
     severity: error
@@ -167,10 +170,7 @@ rules:
 
   - name: layered-architecture
     kind: layer-order
-    layers:
-      - "controller"
-      - "service"
-      - "repository"
+    layers: [controller, service, repository]
     severity: error
 
   - name: no-circular-deps
@@ -179,14 +179,18 @@ rules:
     severity: error
 ```
 
-```
-Fitness: FAIL (3/4 rules passed)
+```mermaid
+graph TD
+    subgraph "Fitness: FAIL (3/4 rules passed)"
+        R1["no-circular-deps\nPASS"] --- R2["layered-architecture\nPASS"]
+        R2 --- R3["max-coupling\nPASS"]
+        R3 --- R4["no-ui-to-db\nFAIL\nUIView -> UserRepo"]
+    end
 
-┌──────────┬─────────────────┬───────────────────────────────────────────┐
-│ Severity │ Rule            │ Message                                   │
-├──────────┼─────────────────┼───────────────────────────────────────────┤
-│ error    │ no-ui-to-db     │ UIView must not depend on UserRepo        │
-└──────────┴─────────────────┴───────────────────────────────────────────┘
+    style R1 fill:#2ecc71,stroke:#27ae60,color:#fff
+    style R2 fill:#2ecc71,stroke:#27ae60,color:#fff
+    style R3 fill:#2ecc71,stroke:#27ae60,color:#fff
+    style R4 fill:#e74c3c,stroke:#c0392b,color:#fff
 ```
 
 ### Compare graph snapshots
@@ -195,11 +199,16 @@ Fitness: FAIL (3/4 rules passed)
 neuron diff old-graph.json new-graph.json
 ```
 
-```
-╭──────────────── Graph Diff ────────────���────╮
-│ +12 nodes, -3 nodes, ~8 modified,           │
-│ +18 edges, -5 edges, drift=6.42%            │
-╰─────────────────────────────────────────────╯
+```mermaid
+graph LR
+    OLD["old-graph.json\n612 nodes\n1283 edges"] --> DIFF{"neuron diff"}
+    NEW["new-graph.json\n624 nodes\n1301 edges"] --> DIFF
+    DIFF --> R["+12 nodes, -3 nodes\n~8 modified\n+18 edges, -5 edges\ndrift = 6.42%"]
+
+    style OLD fill:#95a5a6,stroke:#7f8c8d,color:#fff
+    style NEW fill:#3498db,stroke:#2980b9,color:#fff
+    style DIFF fill:#f39c12,stroke:#e67e22,color:#fff
+    style R fill:#9b59b6,stroke:#8e44ad,color:#fff
 ```
 
 ### Explore interactively in the terminal
@@ -209,15 +218,10 @@ neuron explore
 ```
 
 ```
-╭──── Neuron Graph Explorer ────╮
-│ 624 nodes, 1301 edges         │
-│ Type 'help' for commands       │
-╰───────────────────────────────╯
-
 neuron> search UserService
 neuron> node UserService
 neuron> neighbors UserService
-neuron> path UserService → Database
+neuron> path UserService -> Database
 neuron> tree UserService
 neuron> gods
 neuron> health
@@ -239,24 +243,52 @@ Auto-rebuilds the graph when files change.
 neuron serve .neuron-out/graph.json
 ```
 
-Exposes 7 tools to any MCP-compatible AI assistant (Claude Code, Cursor, etc.):
+```mermaid
+graph TD
+    S["MCP Server"] --> T1["query_graph\nBFS/DFS traversal"]
+    S --> T2["get_node\nFull node details"]
+    S --> T3["get_neighbors\nDirect neighbors"]
+    S --> T4["get_community\nCommunity nodes"]
+    S --> T5["god_nodes\nHub nodes"]
+    S --> T6["shortest_path\nPath between concepts"]
+    S --> T7["graph_stats\nCounts + health overview"]
 
-| Tool | What It Does |
-|------|-------------|
-| `query_graph` | BFS/DFS traversal from keyword-matched nodes |
-| `get_node` | Full details for any node |
-| `get_neighbors` | Direct neighbors with edge details |
-| `get_community` | All nodes in a community |
-| `god_nodes` | Most connected hub nodes |
-| `shortest_path` | Path between two concepts |
-| `graph_stats` | Node/edge counts, health overview |
+    style S fill:#3498db,stroke:#2980b9,color:#fff
+    style T1 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T2 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T3 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T4 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T5 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T6 fill:#1abc9c,stroke:#16a085,color:#fff
+    style T7 fill:#1abc9c,stroke:#16a085,color:#fff
+```
+
+Works with Claude Code, Cursor, Codex, and any MCP-compatible tool.
 
 ---
 
 ## The Pipeline
 
-```
-detect → extract → build → cluster → analyze → health → fitness → report → export
+```mermaid
+graph LR
+    D["Detect\nFile discovery"] --> E["Extract\nAST parsing"]
+    E --> B["Build\nGraph assembly"]
+    B --> CL["Cluster\nCommunities"]
+    CL --> A["Analyze\nCentrality"]
+    A --> H["Health\nA-F scoring"]
+    H --> F["Fitness\nRule checks"]
+    F --> R["Report\nMarkdown"]
+    R --> EX["Export\nHTML/JSON/..."]
+
+    style D fill:#e74c3c,stroke:#c0392b,color:#fff
+    style E fill:#e67e22,stroke:#d35400,color:#fff
+    style B fill:#f39c12,stroke:#e67e22,color:#fff
+    style CL fill:#2ecc71,stroke:#27ae60,color:#fff
+    style A fill:#1abc9c,stroke:#16a085,color:#fff
+    style H fill:#3498db,stroke:#2980b9,color:#fff
+    style F fill:#9b59b6,stroke:#8e44ad,color:#fff
+    style R fill:#34495e,stroke:#2c3e50,color:#fff
+    style EX fill:#e91e63,stroke:#c2185b,color:#fff
 ```
 
 Each stage is a pure function in its own module. No global state.
@@ -269,13 +301,25 @@ Walks your project directory. Classifies every file by type and language. Finds 
 
 Uses **tree-sitter** for deterministic AST extraction across languages. Zero API calls for code. Extracts:
 
-- Functions, methods, classes, interfaces
-- Import/export relationships
-- Call graphs (cross-file)
-- Inheritance and implementation chains
-- Docstrings and signatures
-- Visibility (public/private/protected)
-- Dependencies from package manifests
+```mermaid
+mindmap
+    root((Extract))
+        Entities
+            Functions
+            Methods
+            Classes
+            Interfaces
+        Relationships
+            Import/Export
+            Call graphs
+            Inheritance
+        Metadata
+            Docstrings
+            Signatures
+            Visibility
+        Dependencies
+            Package manifests
+```
 
 **Supported languages:** Python, JavaScript, TypeScript, Go, Rust, Java, C, C++, Ruby, C#, Kotlin, Scala, PHP, Swift, and more.
 
@@ -291,20 +335,33 @@ Runs **Leiden** community detection (or falls back to **Louvain**). Automaticall
 
 Computes four centrality metrics for every node (degree, betweenness, eigenvector, closeness). Identifies:
 
-- **God nodes** — entities with disproportionately high connectivity, with risk scores
-- **Bridge nodes** — nodes that span multiple communities (potential architectural seams)
-- **Surprising connections** — unexpected cross-community, cross-file edges ranked by composite surprise score
-- **Suggested questions** — investigation prompts generated from structural analysis
+- **God nodes** -- entities with disproportionately high connectivity, with risk scores
+- **Bridge nodes** -- nodes that span multiple communities (potential architectural seams)
+- **Surprising connections** -- unexpected cross-community, cross-file edges ranked by composite surprise score
+- **Suggested questions** -- investigation prompts generated from structural analysis
 
 ### 6. Health Score
 
 Computes **per-module health grades** (A through F) based on three dimensions:
 
-| Metric | What It Measures | Why It Matters |
-|--------|-----------------|----------------|
-| **Coupling** | Afferent/efferent dependencies, instability ratio | High coupling = changes ripple everywhere |
-| **Cohesion** | Internal connectivity density | Low cohesion = module is doing too many things |
-| **Complexity** | God node count, max fan-out | High complexity = hard to understand and test |
+```mermaid
+graph TD
+    HS["Health Score\n(A-F)"] --> CP["Coupling\nAfferent/efferent deps\ninstability ratio"]
+    HS --> CO["Cohesion\nInternal connectivity\ndensity"]
+    HS --> CX["Complexity\nGod node count\nmax fan-out"]
+
+    CP --> W1["High coupling =\nchanges ripple everywhere"]
+    CO --> W2["Low cohesion =\nmodule doing too many things"]
+    CX --> W3["High complexity =\nhard to understand & test"]
+
+    style HS fill:#3498db,stroke:#2980b9,color:#fff
+    style CP fill:#e74c3c,stroke:#c0392b,color:#fff
+    style CO fill:#f39c12,stroke:#e67e22,color:#fff
+    style CX fill:#9b59b6,stroke:#8e44ad,color:#fff
+    style W1 fill:#fadbd8,stroke:#e74c3c,color:#333
+    style W2 fill:#fdebd0,stroke:#f39c12,color:#333
+    style W3 fill:#e8daef,stroke:#9b59b6,color:#333
+```
 
 Identifies **hotspots** (worst modules) and generates **actionable recommendations** for refactoring.
 
@@ -312,43 +369,77 @@ Identifies **hotspots** (worst modules) and generates **actionable recommendatio
 
 Evaluates your architecture constraints defined in `neuron-fitness.yaml`:
 
-| Rule Kind | What It Enforces |
-|-----------|-----------------|
-| `no-depend` | A must NOT depend on B |
-| `must-depend` | A MUST depend on B |
-| `max-coupling` | Module can have at most N external deps |
-| `max-fan-out` | Entity can have at most N outgoing edges |
-| `max-fan-in` | Entity can have at most N incoming edges |
-| `layer-order` | Enforce layered architecture direction |
-| `no-circular` | No circular dependencies |
-| `max-community-size` | Community cannot exceed N nodes |
+```mermaid
+graph LR
+    subgraph "Fitness Rule Kinds"
+        ND["no-depend\nA must NOT\ndepend on B"]
+        MD["must-depend\nA MUST\ndepend on B"]
+        MC["max-coupling\nMax N external deps"]
+        MFO["max-fan-out\nMax N outgoing edges"]
+        MFI["max-fan-in\nMax N incoming edges"]
+        LO["layer-order\nEnforce layered\narchitecture"]
+        NC["no-circular\nNo circular deps"]
+        MCS["max-community-size\nCommunity <= N nodes"]
+    end
+
+    style ND fill:#e74c3c,stroke:#c0392b,color:#fff
+    style MD fill:#2ecc71,stroke:#27ae60,color:#fff
+    style MC fill:#f39c12,stroke:#e67e22,color:#fff
+    style MFO fill:#3498db,stroke:#2980b9,color:#fff
+    style MFI fill:#3498db,stroke:#2980b9,color:#fff
+    style LO fill:#9b59b6,stroke:#8e44ad,color:#fff
+    style NC fill:#e74c3c,stroke:#c0392b,color:#fff
+    style MCS fill:#1abc9c,stroke:#16a085,color:#fff
+```
 
 ### 8. Report
 
-Generates `NEURON_REPORT.md` with everything: health dashboard, module scores table, hotspots, fitness violations, god nodes, bridge nodes, surprising connections, community breakdowns, recommendations, and suggested investigation questions.
+Generates `NEURON_REPORT.md` with everything: health dashboard, module scores, hotspots, fitness violations, god nodes, bridge nodes, surprising connections, community breakdowns, recommendations, and suggested investigation questions.
 
 ### 9. Export
 
-| Format | Library | Description |
-|--------|---------|-------------|
-| **HTML** | D3.js force-directed | Interactive visualization with search, inspector, community filtering, health dashboard |
-| **JSON** | NetworkX node-link | Persistent queryable graph data |
-| **GraphML** | — | For Gephi, yEd, and other graph tools |
-| **Obsidian** | Wikilinks | One `.md` per node with `[[links]]`, community overview notes |
-| **SVG** | matplotlib | Static publication-quality graph image |
-| **Cypher** | — | Neo4j import script |
+```mermaid
+graph TD
+    EX["Export"] --> HTML["HTML\nD3.js force-directed\ninteractive visualization"]
+    EX --> JSON["JSON\nNetworkX node-link\nqueryable graph data"]
+    EX --> GML["GraphML\nGephi, yEd\ngraph tools"]
+    EX --> OBS["Obsidian\nWikilinks vault\none .md per node"]
+    EX --> SVG["SVG\nmatplotlib\npublication-quality"]
+    EX --> CYP["Cypher\nNeo4j import script"]
+
+    style EX fill:#3498db,stroke:#2980b9,color:#fff
+    style HTML fill:#e74c3c,stroke:#c0392b,color:#fff
+    style JSON fill:#f39c12,stroke:#e67e22,color:#fff
+    style GML fill:#2ecc71,stroke:#27ae60,color:#fff
+    style OBS fill:#9b59b6,stroke:#8e44ad,color:#fff
+    style SVG fill:#1abc9c,stroke:#16a085,color:#fff
+    style CYP fill:#34495e,stroke:#2c3e50,color:#fff
+```
 
 ---
 
 ## Confidence Tags
 
-Every edge in the graph is tagged:
+Every edge in the graph is tagged with a confidence level:
 
-| Tag | Meaning | Visual |
-|-----|---------|--------|
-| **EXTRACTED** | Deterministic from source code (AST, manifest) | Solid line |
-| **INFERRED** | Heuristic/LLM derived, with 0.0–1.0 score | Dashed line |
-| **AMBIGUOUS** | Flagged for human review | Dotted line |
+```mermaid
+graph LR
+    E["Edge"] --> EXT["EXTRACTED\nDeterministic from\nsource code / AST"]
+    E --> INF["INFERRED\nHeuristic/LLM derived\n0.0 - 1.0 score"]
+    E --> AMB["AMBIGUOUS\nFlagged for\nhuman review"]
+
+    EXT -.-|"solid line"| V1[" "]
+    INF -.-|"dashed line"| V2[" "]
+    AMB -.-|"dotted line"| V3[" "]
+
+    style E fill:#3498db,stroke:#2980b9,color:#fff
+    style EXT fill:#2ecc71,stroke:#27ae60,color:#fff
+    style INF fill:#f39c12,stroke:#e67e22,color:#fff
+    style AMB fill:#e74c3c,stroke:#c0392b,color:#fff
+    style V1 fill:none,stroke:none
+    style V2 fill:none,stroke:none
+    style V3 fill:none,stroke:none
+```
 
 ---
 
@@ -402,48 +493,82 @@ Neuron caches extraction results using SHA256 file hashes. Re-runs only process 
 
 ## How Is This Different?
 
-Neuron is inspired by the knowledge graph approach but adds features that help you actually *improve* your codebase, not just visualize it:
-
-| Feature | Description |
-|---------|-------------|
-| **Health Scoring** | Quantitative A–F grades per module with coupling, cohesion, and complexity metrics |
-| **Fitness Rules** | YAML-based architecture constraints that catch violations automatically |
-| **Graph Diffing** | Compare snapshots across branches/commits with structural drift scores |
-| **Terminal Explorer** | Full REPL for navigating the graph without opening a browser |
-| **Bridge Detection** | Finds nodes that span communities — natural refactoring seams |
-| **Risk Scoring** | God nodes get risk scores based on betweenness centrality + degree |
-| **Dependency Awareness** | Reads package manifests (npm, cargo, go, pip, etc.) not just source code |
-| **D3.js Visualization** | Force-directed graph with health dashboard, community filtering, and dark theme |
-| **Actionable Output** | Not just "here's your graph" — generates specific refactoring recommendations |
+```mermaid
+mindmap
+    root((Neuron))
+        Health Scoring
+            A-F grades per module
+            Coupling, cohesion, complexity
+        Fitness Rules
+            YAML-based constraints
+            Auto-detect violations
+        Graph Diffing
+            Branch/commit comparison
+            Structural drift scores
+        Terminal Explorer
+            Full REPL navigation
+            No browser required
+        Bridge Detection
+            Cross-community nodes
+            Natural refactoring seams
+        Risk Scoring
+            Betweenness centrality
+            Degree-based risk
+        Dependency Awareness
+            npm, cargo, go, pip
+            Source code + manifests
+        D3.js Visualization
+            Force-directed graph
+            Health dashboard + dark theme
+        Actionable Output
+            Refactoring recommendations
+            Not just visualization
+```
 
 ---
 
 ## Project Structure
 
-```
-neuron/
-├── neuron/
-│   ├── __init__.py        # Lazy imports
-│   ├── __main__.py        # CLI (click)
-│   ├── detect.py          # File discovery + classification
-│   ├── extract.py         # Tree-sitter AST extraction
-│   ├── build.py           # NetworkX graph assembly
-│   ├── cluster.py         # Leiden/Louvain community detection
-│   ├── analyze.py         # Centrality, god nodes, bridges
-│   ├── health.py          # Module health scoring (A–F)
-│   ├── fitness.py         # Architecture fitness rules
-│   ├── diff.py            # Graph snapshot diffing
-│   ├── report.py          # NEURON_REPORT.md generation
-│   ├── export.py          # HTML, JSON, GraphML, Obsidian, SVG, Neo4j
-│   ├── tui.py             # Terminal graph explorer
-│   ├── serve.py           # MCP server (7 tools)
-│   ├── cache.py           # SHA256 incremental cache
-│   ├── watch.py           # File watcher + WebSocket live reload
-│   ├── security.py        # Input validation, SSRF protection
-│   └── skill.md           # AI assistant skill definition
-├── tests/                 # 50 tests covering all modules
-├── pyproject.toml
-└── LICENSE
+```mermaid
+graph TD
+    subgraph "neuron/"
+        INIT["__init__.py\nLazy imports"]
+        MAIN["__main__.py\nCLI (click)"]
+        DET["detect.py\nFile discovery"]
+        EXT["extract.py\nTree-sitter AST"]
+        BLD["build.py\nNetworkX graph"]
+        CLU["cluster.py\nLeiden/Louvain"]
+        ANA["analyze.py\nCentrality, gods, bridges"]
+        HLT["health.py\nA-F scoring"]
+        FIT["fitness.py\nArchitecture rules"]
+        DIF["diff.py\nSnapshot diffing"]
+        RPT["report.py\nReport generation"]
+        EXP["export.py\nHTML, JSON, GraphML, ..."]
+        TUI["tui.py\nTerminal explorer"]
+        SRV["serve.py\nMCP server"]
+        CAC["cache.py\nSHA256 cache"]
+        WAT["watch.py\nFile watcher"]
+        SEC["security.py\nInput validation"]
+    end
+
+    MAIN --> DET --> EXT --> BLD --> CLU --> ANA --> HLT --> FIT --> RPT --> EXP
+
+    style MAIN fill:#e74c3c,stroke:#c0392b,color:#fff
+    style DET fill:#e67e22,stroke:#d35400,color:#fff
+    style EXT fill:#f39c12,stroke:#e67e22,color:#fff
+    style BLD fill:#f1c40f,stroke:#f39c12,color:#333
+    style CLU fill:#2ecc71,stroke:#27ae60,color:#fff
+    style ANA fill:#1abc9c,stroke:#16a085,color:#fff
+    style HLT fill:#3498db,stroke:#2980b9,color:#fff
+    style FIT fill:#9b59b6,stroke:#8e44ad,color:#fff
+    style RPT fill:#34495e,stroke:#2c3e50,color:#fff
+    style EXP fill:#e91e63,stroke:#c2185b,color:#fff
+    style TUI fill:#607d8b,stroke:#455a64,color:#fff
+    style SRV fill:#607d8b,stroke:#455a64,color:#fff
+    style CAC fill:#607d8b,stroke:#455a64,color:#fff
+    style WAT fill:#607d8b,stroke:#455a64,color:#fff
+    style SEC fill:#607d8b,stroke:#455a64,color:#fff
+    style INIT fill:#607d8b,stroke:#455a64,color:#fff
 ```
 
 ---
